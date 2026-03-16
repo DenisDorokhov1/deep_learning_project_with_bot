@@ -3,11 +3,10 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from scripts.faiss_search_clip import search_monument
-from scripts.formatter import format_answer
+from keyboards.inline_keyboard.error_button import error_inline_keyboard
 from scripts.llm.generate import generate_monument_text
 from scripts.config import CONFIDENCE_THRESHOLD
 from scripts.logger import logger
-
 TEMP_IMAGE = "user_photo.jpg"
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -20,18 +19,24 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if not results or results[0]["score"] < CONFIDENCE_THRESHOLD:
             await update.message.reply_text(
-                "😕 Не удалось уверенно определить здание (CLIP)."
+                "Не удалось уверенно определить здание (CLIP)."
             )
             return
 
         top = results[0]
 
         text = generate_monument_text(top)
-        await update.message.reply_text(text)
 
         logger.info(
             f'model=CLIP | monument="{top["name"]}" | score={top["score"]:.4f}'
         )
+
+        await update.message.reply_text(
+            text,
+            reply_markup=error_inline_keyboard
+        )
+
+
 
     finally:
         if os.path.exists(TEMP_IMAGE):

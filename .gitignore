@@ -1,6 +1,5 @@
 # Виртуальное окружение
 venv/
-.venv/
 
 # Локальные файлы конфигурации
 .env
@@ -16,3 +15,13 @@ images.zip
 .idea/
 *.pyc
 __pycache__/
+
+# Директория с логами
+/logs
+
+/api_google_test
+*.json
+/table.py
+/download_clip_model.py
+/scripts/llm/test.py
+/api/sightseeing-bot-459ef19a2290.json

@@ -18,7 +18,7 @@ for filename in os.listdir(IMAGES_DIR):
         with Image.open(path) as img:
             img.verify()  # проверяет целостность файла
     except Exception as e:
-        print(f"❌ Удаляю битый файл: {filename} ({e})")
+        print(f"Удаляю битый файл: {filename} ({e})")
         os.remove(path)
         removed += 1
 

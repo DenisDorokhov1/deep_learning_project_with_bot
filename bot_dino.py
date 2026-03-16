@@ -8,16 +8,18 @@ from telegram.ext import (
     filters
 )
 
+from api.send_warning import create_headers_if_not_exist
+
 from handlers.commands import start, help_command
-from handlers.callbacks import recognize_callback
 from handlers.photos_dino import handle_photo
+from handlers.callbacks import recognize_callback, report_issue_callback, feedback_message_handler
 from handlers.fallback import handle_text
 
 from scripts.config import BOT_TOKEN
 
+create_headers_if_not_exist()
 
-TEMP_IMAGE = "user_photo.jpg"
-
+# TEMP_IMAGE = "user_photo.jpg"
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -30,11 +32,18 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
 
+    # Любой текст, который не команда и не фото
+    # app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+
+    app.add_handler(
+        CallbackQueryHandler(report_issue_callback, pattern="report_issue")
+    )
+
+    app.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, feedback_message_handler)
+    )
     # Фото
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-
-    # Любой текст, который не команда и не фото
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     print("🤖 Бот запущен")
     app.run_polling()

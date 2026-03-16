@@ -2,17 +2,12 @@ import json
 import faiss
 import numpy as np
 from scripts.dino_model import encode_image
+from scripts.config import FAISS_DINO_PATH, INDEX_MAP_DINO_PATH, METADATA_PATH
 
-FAISS_PATH = "data/dino/monuments_dino.faiss"
-INDEX_MAP_PATH = "data/dino/index_map_dino.json"
-METADATA_PATH = "data/monuments_metadata.json"
-
-# -----------------------------
 # Загрузка при старте
-# -----------------------------
-index = faiss.read_index(FAISS_PATH)
+index = faiss.read_index(FAISS_DINO_PATH)
 
-with open(INDEX_MAP_PATH, "r", encoding="utf-8") as f:
+with open(INDEX_MAP_DINO_PATH, "r", encoding="utf-8") as f:
     index_map = json.load(f)
 
 with open(METADATA_PATH, "r", encoding="utf-8") as f:
